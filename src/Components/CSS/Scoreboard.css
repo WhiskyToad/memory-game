@@ -1,0 +1,21 @@
+#scoreboard {
+    background: black;
+    width: 750px;
+    height: 250px;
+    margin: 20px auto;
+    border: 8px solid white;
+    border-radius: 10px;
+    color: #B6FF00;
+    font-size: 18px;
+}
+
+#scoreboard h1 {
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    color: red;
+}
