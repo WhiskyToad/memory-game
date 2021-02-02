@@ -10,6 +10,8 @@ play every theme round
 
 SOMETHING FUCKED UP WITH MAX SCORE
 
+Need to change to not use multiple states in same function
+
 
 
 
@@ -23,43 +25,53 @@ import Data from './Data';
 
 const Game = (props) => {
     const riders = Data;
-    const [score, setScore] = useState(0);
-    const [highScore, setHighScore] = useState(0);
-    const [cardOne, setCardOne] = useState(riders[0]);
-    const [cardTwo, setCardTwo] = useState(riders[1]);
-    const [cardThree, setCardThree] = useState(riders[2]);
+    const [scores, setScores] = useState({
+        score: 0,
+        highScore: 0
+    });
+    const [cards, setCards] = useState({
+        cardOne: riders[0],
+        cardTwo: riders[1],
+        cardThree: riders[2]
+    });
 
 
     /* Plays on click and checks answer
     */
     function playRound(choice){
         if (!riders[choice].used){
-            setScore(score +1);
+            setScores({
+                highScore: scores.highScore,
+                score: scores.score +1 
+            }
+            );
             riders[choice].used = true
         }else{
             alert('loser')
             newGame();
         }
-        if (score === riders.length -1){
+        if (scores.score === riders.length){
             alert('Jeez Louise you win!')
             newGame();
         }
         else {
-            setCards();
+            changeCards();
         }
     }
 
     /*checks to ensure at least one card hasn't been picked
     and then sets the new card values*/
-    function setCards(){
+    function changeCards(){
         shuffle(riders)
         if (riders[0].used === true && riders[1].used === true && riders[2].used === true){
-            setCards();
+            changeCards();
         }
         else {
-            setCardOne(riders[0]);
-            setCardTwo(riders[1]);
-            setCardThree(riders[2]);
+            setCards({
+                cardOne: riders[0],
+                cardTwo: riders[1],
+                cardThree: riders[2]
+            });
         }
     }
 
@@ -70,11 +82,19 @@ const Game = (props) => {
                 riders[i].used = false;
             }
         }
-        if (score > highScore ){
-            setHighScore(score +1);
+        if (scores.score > scores.highScore ){
+            setScores({
+                highScore: scores.score,
+                score: 0
+            });
+            changeCards();
+        }else{
+            setScores({
+                highScore: scores.highScore,
+                score: 0
+            });
+            changeCards();
         }
-        setScore(0);
-        setCards();
     }
 
     /* Shuffle the array */
@@ -91,20 +111,20 @@ const Game = (props) => {
 
     return (
         <div>
-        <Scoreboard score = {score} 
-                    highScore = {highScore}/>
+        <Scoreboard score = {scores.score} 
+                    highScore = {scores.highScore}/>
         <div id = "game-container">
             <div className = "card" onClick = {() => playRound(0)}>
-                <img src = {cardOne.src} alt ={cardOne.name}></img>
-                <span className = 'rider-name'>{cardOne.name}</span>
+                <img src = {cards.cardOne.src} alt ={cards.cardOne.name}></img>
+                <span className = 'rider-name'>{cards.cardOne.name}</span>
             </div>
-            <div className = "card" onClick = {() => playRound(1)}>{cardTwo.id}
-                <img src = {cardTwo.src} alt ={cardTwo.name}></img>
-                <span className = 'rider-name'>{cardTwo.name}</span>
+            <div className = "card" onClick = {() => playRound(1)}>{cards.cardTwo.id}
+                <img src = {cards.cardTwo.src} alt ={cards.cardTwo.name}></img>
+                <span className = 'rider-name'>{cards.cardTwo.name}</span>
             </div>
-            <div className = "card" onClick = {() => playRound(2)}>{cardThree.id}
-                <img src = {cardThree.src} alt ={cardThree.name}></img>
-                <span className = 'rider-name'>{cardThree.name}</span>
+            <div className = "card" onClick = {() => playRound(2)}>{cards.cardThree.id}
+                <img src = {cards.cardThree.src} alt ={cards.cardThree.name}></img>
+                <span className = 'rider-name'>{cards.cardThree.name}</span>
             </div>
         </div>
         </div>
